@@ -4,8 +4,8 @@ import {Observable} from 'rx';
 // depending on the route value.
 function getFilterFn(route) {
   switch (route) {
-    case '/active': return (task => task.completed === false);
-    case '/completed': return (task => task.completed === true);
+    case '/active': return task => task.completed === false;
+    case '/completed': return task => task.completed === true;
     default: return () => true; // allow anything
   }
 }
@@ -51,20 +51,20 @@ function makeModification$(actions) {
       completed: false
     });
     return todosData;
-  });
+  })/**/.do(() => console.log('MODEL: insertTodoMod$'));/*-debug-*/
 
   const editTodoMod$ = actions.editTodo$.map(action => (todosData) => {
     const todoIndex = searchTodoIndex(todosData.list, action.id);
     todosData.list[todoIndex].title = action.title;
     return todosData;
-  });
+  })/**/.do(() => console.log('MODEL: editTodoMod$'));/*-debug-*/
 
   const toggleTodoMod$ = actions.toggleTodo$.map(action => (todosData) => {
     const todoIndex = searchTodoIndex(todosData.list, action.id);
     const previousCompleted = todosData.list[todoIndex].completed;
     todosData.list[todoIndex].completed = !previousCompleted;
     return todosData;
-  });
+  })/**/.do(() => console.log('MODEL: toggleTodoMod$'));/*-debug-*/
 
   const toggleAllMod$ = actions.toggleAll$.map(() => (todosData) => {
     const allAreCompleted = todosData.list
@@ -73,28 +73,28 @@ function makeModification$(actions) {
       todoData.completed = allAreCompleted ? false : true;
     });
     return todosData;
-  });
+  })/**/.do(() => console.log('MODEL: toggleAllMod$'));/*-debug-*/
 
   const deleteTodoMod$ = actions.deleteTodo$.map(action => (todosData) => {
     const todoIndex = searchTodoIndex(todosData.list, action.id);
     todosData.list.splice(todoIndex, 1);
     return todosData;
-  });
+  })/**/.do(() => console.log('MODEL: deleteTodoMod$'));/*-debug-*/
 
   const deleteCompletedsMod$ = actions.deleteCompleteds$.map(() => (todosData) => {
     todosData.list = todosData.list
       .filter(todoData => todoData.completed === false);
-    return todosData
-  });
+    return todosData;
+  })/**/.do(() => console.log('MODEL: deleteCompletedsMod$'));/*-debug-*/
 
   const changeRouteMod$ = actions.changeRoute$.startWith('/').map(route => {
-    const filterFn = getFilterFn(route)
+    const filterFn = getFilterFn(route);
     return (todosData) => {
       todosData.filter = route.replace('/', '').trim();
       todosData.filterFn = filterFn;
       return todosData;
-    }
-  });
+    };
+  })/**/.do(() => console.log('MODEL: changeRouteMod$'));/*-debug-*/
 
   return Observable.merge(
     insertTodoMod$, deleteTodoMod$, toggleTodoMod$, toggleAllMod$,
@@ -118,6 +118,7 @@ function model(actions, sourceTodosData$) {
     .scan((todosData, modFn) => modFn(todosData))
     // Make this a hot Observable with with
     // a replay buffer of one item.
+    /**/.do((x) => console.log('sourceTodosData$', x))/*-debug-*/
     .shareReplay(1);
 }
 

@@ -10,12 +10,13 @@ export default function intent(DOM, hashchange, initialHash, itemAction$) {
     changeRoute$: Observable.concat(
       initialHash.map(hash => hash.replace('#', '')),
       hashchange.map(ev => ev.newURL.match(/\#[^\#]*$/)[0].replace('#', ''))
-    ),
+    )/**/.do((x) => console.log('INTENT: changeRoute$', x))/*-debug-*/,
 
     // CLEAR INPUT STREAM
     // A stream of ESC key strokes in the `.new-todo` field.
     clearInput$: DOM.select('.new-todo').events('keydown')
-      .filter(ev => ev.keyCode === ESC_KEY),
+      .filter(ev => ev.keyCode === ESC_KEY)
+      /**/.do((x) => console.log('INTENT: clearInput$ (ESC)', x))/*-debug-*/,
 
     // ENTER KEY STREAM
     // A stream of ENTER key strokes in the `.new-todo` field.
@@ -27,26 +28,33 @@ export default function intent(DOM, hashchange, initialHash, itemAction$) {
         return ev.keyCode === ENTER_KEY && trimmedVal;
       })
       // Return the trimmed value.
+      /**/.do((x) => console.log('INTENT: insertTodo$ (ENTER)', x))/*-debug-*/
       .map(ev => String(ev.target.value).trim()),
+
 
     // TOGGLE STREAM
     // Create a stream out of all the toggle actions on the todo items.
-    toggleTodo$: itemAction$.filter(action => action.type === 'toggle'),
+    toggleTodo$: itemAction$.filter(action => action.type === 'toggle')
+    /**/.do((x) => console.log('INTENT: toggleTodo$', x))/*-debug-*/,
 
     // DELETE STREAM
     // Create a stream out of all the destroy actions on the todo items.
-    deleteTodo$: itemAction$.filter(action => action.type === 'destroy'),
+    deleteTodo$: itemAction$.filter(action => action.type === 'destroy')
+    /**/.do((x) => console.log('INTENT: deleteTodo$', x))/*-debug-*/,
 
     // EDIT STREAM
     // Create a stream out of all the doneEdit actions on the todo items.
-    editTodo$: itemAction$.filter(action => action.type === 'doneEdit'),
+    editTodo$: itemAction$.filter(action => action.type === 'doneEdit')
+    /**/.do((x) => console.log('INTENT: editTodo$', x))/*-debug-*/,
 
     // TOGGLE ALL STREAM
     // Create a stream out of the clicks on the `.toggle-all` button.
-    toggleAll$: DOM.select('.toggle-all').events('click'),
+    toggleAll$: DOM.select('.toggle-all').events('click')
+    /**/.do((x) => console.log('INTENT: toggleAll$', x))/*-debug-*/,
 
     // DELETE COMPLETED TODOS STREAM
     // A stream of click events on the `.clear-completed` element.
     deleteCompleteds$: DOM.select('.clear-completed').events('click')
+    /**/.do((x) => console.log('INTENT: deleteCompleteds$', x))/*-debug-*/
   };
-};
+}

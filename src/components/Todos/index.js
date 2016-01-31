@@ -47,11 +47,13 @@ function Todos({DOM, hashchange, initialHash, storage}) {
   // Here we create a localStorage stream that only streams
   // the first value read from localStorage in order to
   // supply the application with initial state.
-  const localStorage$ = storage.local.getItem('todos-cycle').take(1);
+  const localStorage$ = storage.local.getItem('todos-cycle').take(1)
+  /**/.do((x) => console.log('localStorage (first value read)', x))/*-debug-*/;
   // THE INITIAL TODO DATA
   // The `deserialize` function takes the serialized JSON stored in localStorage
   // and turns it into a stream sending a JSON object.
-  const sourceTodosData$ = deserialize(localStorage$);
+  const sourceTodosData$ = deserialize(localStorage$)
+  /**/.do((x) => console.log('deserialize(localStorage$)', x))/*-debug-*/;
   // THE PROXY ITEM ACTION STREAM
   // We use an Rx.Subject as a proxy for all the actions that stream
   // from the different todo items.
@@ -65,7 +67,9 @@ function Todos({DOM, hashchange, initialHash, storage}) {
   // coming through the intent streams and prepares the data for the view.
   const state$ = model(actions, sourceTodosData$);
   // AMEND STATE WITH CHILDREN
-  const amendedState$ = state$.map(amendStateWithChildren(DOM)).shareReplay(1);
+  const amendedState$ = state$.map(amendStateWithChildren(DOM))
+  /**/.do((x) => console.log('amendedState$', x))/*-debug-*/
+  .shareReplay(1);
   // A STREAM OF ALL ACTIONS ON ALL TODOS
   // Each todo item has an action stream. All those action streams are being
   // merged into a stream of all actions. Below this stream is passed into
@@ -74,7 +78,7 @@ function Todos({DOM, hashchange, initialHash, storage}) {
   // of the list and can be handled in the model function of the list.
   const itemAction$ = amendedState$.flatMapLatest(({list}) =>
     Observable.merge(list.map(i => i.todoItem.action$))
-  );
+  )/**/.do((x) => console.log('itemAction$', x))/*-debug-*/;
   // PASS ITEM ACTIONS TO PROXY
   // The item actions are passed to the proxy object.
   itemAction$.subscribe(proxyItemAction$);
@@ -82,7 +86,7 @@ function Todos({DOM, hashchange, initialHash, storage}) {
   // The latest state is written to localStorage.
   const storage$ = serialize(state$).map((state) => ({
     key: 'todos-cycle', value: state
-  }));
+  }))/**/.do(() => console.log('WRITE TO LOCALSTORAGE\n\n'))/*-debug-*/;
   // COMPLETE THE CYCLE
   // Write the virtual dom stream to the DOM and write the
   // storage stream to localStorage.

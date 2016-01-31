@@ -15,7 +15,7 @@ function renderHeader() {
 }
 
 function renderMainSection(todosData) {
-  let allCompleted = todosData.list.reduce((x, y) => x && y.completed, true);
+  const allCompleted = todosData.list.reduce((x, y) => x && y.completed, true);
   return section('.main', {
     style: {'display': todosData.list.length ? '' : 'none'}
   }, [
@@ -28,14 +28,14 @@ function renderMainSection(todosData) {
       .filter(todosData.filterFn)
       .map(data => data.todoItem.DOM)
     )
-  ])
+  ]);
 }
 
 function renderFooter(todosData) {
-  let amountCompleted = todosData.list
+  const amountCompleted = todosData.list
     .filter(todoData => todoData.completed)
     .length;
-  let amountActive = todosData.list.length - amountCompleted;
+  const amountActive = todosData.list.length - amountCompleted;
   return footer('.footer', {
     style: {'display': todosData.list.length ? '' : 'none'}
   }, [
@@ -67,7 +67,7 @@ function renderFooter(todosData) {
       button('.clear-completed', 'Clear completed (' + amountCompleted + ')')
       : null
     )
-  ])
+  ]);
 }
 
 // THE VIEW
@@ -83,4 +83,4 @@ export default function view(todos$) {
       renderFooter(todos)
     ])
   );
-};
+}

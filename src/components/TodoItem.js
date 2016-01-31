@@ -2,7 +2,7 @@ import {Observable} from 'rx';
 import {button, div, input, label, li} from '@cycle/dom';
 import {propHook, ENTER_KEY, ESC_KEY} from '../utils';
 
-// THE TODO ITEM INTENT
+// THE TODO ITEM - INTENT
 // This intent function returns a stream of all the different,
 // actions that can be taken on a todo.
 function intent(DOM) {
@@ -10,20 +10,25 @@ function intent(DOM) {
   // Merge all actions into one stream.
   return Observable.merge(
     // THE DESTROY ACTION STREAM
-    DOM.select('.destroy').events('click').map(() => ({type: 'destroy'})),
+    DOM.select('.destroy').events('click').map(() => ({type: 'destroy'}))
+    /**/.do((x) => console.log('TODO ITEM - INTENT: destroy:click', x))/*-debug-*/,
     // THE TOGGLE ACTION STREAM
-    DOM.select('.toggle').events('change').map(() => ({type: 'toggle'})),
+    DOM.select('.toggle').events('change').map(() => ({type: 'toggle'}))
+    /**/.do((x) => console.log('TODO ITEM - INTENT: toggle:change', x))/*-debug-*/,
     // THE START EDIT ACTION STREAM
-    DOM.select('label').events('dblclick').map(() => ({type: 'startEdit'})),
+    DOM.select('label').events('dblclick').map(() => ({type: 'startEdit'}))
+    /**/.do((x) => console.log('TODO ITEM - INTENT: label:dblclick', x))/*-debug-*/,
     // THE ESC KEY ACTION STREAM
     DOM.select('.edit').events('keyup')
       .filter(ev => ev.keyCode === ESC_KEY)
-      .map(() => ({type: 'cancelEdit'})),
+      .map(() => ({type: 'cancelEdit'}))
+      /**/.do((x) => console.log('TODO ITEM - INTENT: edit:keyup(ESC)', x))/*-debug-*/,
     // THE ENTER KEY ACTION STREAM
     DOM.select('.edit').events('keyup')
       .filter(ev => ev.keyCode === ENTER_KEY)
       .merge(DOM.select('.edit').events('blur', true))
       .map(ev => ({title: ev.target.value, type: 'doneEdit'}))
+      /**/.do((x) => console.log('TODO ITEM - INTENT: edit:keyup(ENTER)', x))/*-debug-*/
   )
   // MAKE THIS OBSERVABLE HOT
   // By sharing it will act as a hot Observable.
@@ -39,11 +44,15 @@ function model(props$, action$) {
   // "is editing" state.
   const editing$ = Observable
     .merge(
-      action$.filter(a => a.type === 'startEdit').map(() => true),
-      action$.filter(a => a.type === 'doneEdit').map(() => false),
+      action$.filter(a => a.type === 'startEdit').map(() => true)
+      /**/.do((x) => console.log('TODO ITEM - startEdit - editing:', x))/*-debug-*/,
+      action$.filter(a => a.type === 'doneEdit').map(() => false)
+      /**/.do((x) => console.log('TODO ITEM - doneEdit - editing:', x))/*-debug-*/,
       action$.filter(a => a.type === 'cancelEdit').map(() => false)
+      /**/.do((x) => console.log('TODO ITEM - cancelEdit - editing:', x))/*-debug-*/,
     )
     .startWith(false);
+
   return Observable.combineLatest(
     sanitizedProps$, editing$,
     ({title, completed}, editing) => ({title, completed, editing})
@@ -77,8 +86,8 @@ function view(state$) {
   });
 }
 
-// THE TODO ITEM FUNCTION
-// This is a simple todo item component,
+// THE TODO ITEM - FUNCTION
+// This is a simple todo item - component,
 // structured with the MVI-pattern.
 function TodoItem({DOM, props$}) {
   const action$ = intent(DOM);

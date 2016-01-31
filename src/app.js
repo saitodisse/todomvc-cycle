@@ -19,10 +19,12 @@ run(main, {
   DOM: CycleDOM.makeDOMDriver('.todoapp'),
   // THE INITAL HASH STREAM
   // A driver that only delivers the initial hash value as source.
-  initialHash: () => Observable.just(window.location.hash),
+  initialHash: () => Observable.just(window.location.hash)
+  /**/.do((x) => console.log('DRIVER: initialHash', x))/*-debug-*/,
   // THE HASH CHANGE STREAM
   // A driver that delivers the hash value on the hashChange event, as source.
-  hashchange: () => Observable.fromEvent(window, 'hashchange'),
+  hashchange: () => Observable.fromEvent(window, 'hashchange')
+  /**/.do((x) => console.log('DRIVER: hashchange', x))/*-debug-*/,
   // THE STORAGE DRIVER
   // The storage driver which can be used to access values for
   // local- and sessionStorage keys as streams.
