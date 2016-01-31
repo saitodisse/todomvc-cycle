@@ -29,10 +29,11 @@
   "devDependencies": {
     "babel": "5.8.29",
     "babelify": "6.2.0",
-    "uglify-js": "2.6.1",
     "browserify": "12.0.1",
+    "eslint": "^1.10.3",
     "live-server": "^0.9.0",
     "npm-run-all": "^1.4.0",
+    "uglify-js": "2.6.1",
     "watchify": "^3.6.1"
   },
   "scripts": {
@@ -41,6 +42,7 @@
     "serve": "live-server ./",
     "uglify": "uglifyjs js/app.js -o js/app.min.js",
     "build": "npm run build-debug && npm run uglify",
+    "lint": "eslint src/**/*.js",
     "start": "npm-run-all --parallel watch:js serve"
   }
 }

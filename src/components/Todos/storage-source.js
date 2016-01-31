@@ -1,8 +1,8 @@
 function merge() {
-  let result = {};
+  const result = {};
   for (let i = 0; i < arguments.length; i++) {
     const object = arguments[i];
-    for (let key in object) {
+    for (const key in object) {
       if (object.hasOwnProperty(key)) {
         result[key] = object[key];
       }
@@ -20,7 +20,7 @@ const mergeWithDefaultTodosData = todosData => {
     filterFn: () => true // allow anything
   };
   return merge(defaultTodosData, todosData);
-}
+};
 
 // Take localStorage todoData stream and transform into
 // a JavaScript object. Set default data.
@@ -28,4 +28,4 @@ export default function deserialize(localStorageValue$) {
   return localStorageValue$
     .map(safeJSONParse)
     .map(mergeWithDefaultTodosData);
-};
+}

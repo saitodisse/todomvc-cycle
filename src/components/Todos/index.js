@@ -1,5 +1,5 @@
 import {Observable, Subject} from 'rx';
-import isolate from '@cycle/isolate'
+import isolate from '@cycle/isolate';
 import intent from './intent';
 import model from './model';
 import view from './view';
@@ -11,7 +11,7 @@ import TodoItem from '../TodoItem';
 // This function creates the projection function
 // for the map function below.
 function amendStateWithChildren(DOMSource) {
-  return function (todosData) {
+  return (todosData) => {
     return {
       ...todosData,
       // The list property is the only one being amended.
