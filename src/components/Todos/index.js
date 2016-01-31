@@ -68,7 +68,6 @@ function Todos({DOM, hashchange, initialHash, storage}) {
   const state$ = model(actions, sourceTodosData$);
   // AMEND STATE WITH CHILDREN
   const amendedState$ = state$.map(amendStateWithChildren(DOM))
-  /**/.do((x) => console.log('amendedState$', x))/*-debug-*/
   .shareReplay(1);
   // A STREAM OF ALL ACTIONS ON ALL TODOS
   // Each todo item has an action stream. All those action streams are being

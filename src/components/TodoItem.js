@@ -26,9 +26,11 @@ function intent(DOM) {
     // THE ENTER KEY ACTION STREAM
     DOM.select('.edit').events('keyup')
       .filter(ev => ev.keyCode === ENTER_KEY)
-      .merge(DOM.select('.edit').events('blur', true))
-      .map(ev => ({title: ev.target.value, type: 'doneEdit'}))
       /**/.do((x) => console.log('TODO ITEM - INTENT: edit:keyup(ENTER)', x))/*-debug-*/
+      .merge(
+        DOM.select('.edit').events('blur', true)
+        /**/.do((x) => console.log('TODO ITEM - INTENT: edit:blur', x))/*-debug-*/)
+      .map(ev => ({title: ev.target.value, type: 'doneEdit'}))
   )
   // MAKE THIS OBSERVABLE HOT
   // By sharing it will act as a hot Observable.
